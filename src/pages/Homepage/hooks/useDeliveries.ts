@@ -5,8 +5,8 @@ import fetcher from '@Utils/fetcher';
 
 const API = process.env.REACT_APP_API;
 
-const useDriverActivity = () => {
-  const { data, error } = useSWR(`${API}/deliveries`, fetcher);
+const useDeliveries = (id = '') => {
+  const { data, error } = useSWR(`${API}/deliveries/${id}`, fetcher);
 
   return {
     data,
@@ -15,4 +15,4 @@ const useDriverActivity = () => {
   };
 };
 
-export default useDriverActivity;
+export default useDeliveries;

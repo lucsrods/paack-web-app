@@ -1,7 +1,6 @@
-import React from 'react';
+import { DeliveryContext } from '@Contexts/DeliveryContext';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-
-import useDriverActivity from './hooks/useDriverActivity';
 
 import {
   Item,
@@ -9,7 +8,7 @@ import {
 } from './styles';
 
 const Homepage = () => {
-  const { data, loading } = useDriverActivity();
+  const { data, loading } = useContext(DeliveryContext);
 
   if (loading) {
     return <h2>Loading</h2>;
