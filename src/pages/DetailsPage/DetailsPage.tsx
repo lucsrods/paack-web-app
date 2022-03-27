@@ -3,12 +3,14 @@ import { Link, useParams } from 'react-router-dom';
 
 import Button from '@Components/Button';
 import Status from '@Components/Status';
-import Loading from '@Components/Loading';
+import Curtain from '@Components/Curtain';
 import { DeliveryContext } from '@Contexts/DeliveryContext';
 import { DeliveryStatus, IDelivery } from '@Interfaces/delivery';
 import { updateActiveDelivery, updateDeliveryStatus } from '@Services/deliveries';
 
 import { ActionsWrapper, DetailsPageWrapper } from './styles';
+import { ROUTES } from '@Constants/routes';
+import { buildUrl } from '@Utils/path';
 
 const DetailsPage = () => {
   const { activeDelivery, deliveries, dispatch } = useContext(DeliveryContext);
@@ -22,8 +24,18 @@ const DetailsPage = () => {
     setLoading(false);
   }, [deliveries, id]);
 
-  if (loading || !currentDelivery) {
-    return <Loading />;
+  if (loading) {
+    return <Curtain title="Loading..." />;
+  }
+
+  if (!currentDelivery) {
+    return (
+      <>
+        <Curtain title="404" message="The delivery you're looking for was not found">
+          <Link to={ROUTES.ROOT}>Go to deliveries list</Link>
+        </Curtain>
+      </>
+    );
   }
 
   const isActiveDelivery = activeDelivery?.id === id;
@@ -56,7 +68,7 @@ const DetailsPage = () => {
 
   return (
     <DetailsPageWrapper>
-      <Link to="/">Deliveries list</Link>
+      <Link to={ROUTES.ROOT}>Deliveries list</Link>
 
       <h1>Delivery Details</h1>
       <span><b>STATUS: </b><Status isActive={isActiveDelivery} status={delivery.status} /></span>
@@ -102,7 +114,7 @@ const DetailsPage = () => {
               </Button>
             )}
             {activeDelivery?.id && (
-              <Link to={`/delivery/${activeDelivery?.id}`}>
+              <Link to={buildUrl(ROUTES.DELIVERY_DETAILS, activeDelivery?.id)}>
                 Go to Active Delivery
               </Link>)
             }

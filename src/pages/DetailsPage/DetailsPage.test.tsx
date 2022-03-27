@@ -70,4 +70,20 @@ describe('Details Page', () => {
       expect(screen.getByText(/delivered/i)).toBeInTheDocument();
     });
   });
+
+  it('should have a link to the active delivery', async () => {
+    render(
+      <DeliveryContextProvider>
+        <BrowserRouter>
+          <Routes location={'/delivery/2'}>
+            <Route path="/delivery/:id" element={<DetailsPage />} />
+          </Routes>
+        </BrowserRouter>
+      </DeliveryContextProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/go to active delivery/i)).toBeInTheDocument();
+    });
+  });
 });

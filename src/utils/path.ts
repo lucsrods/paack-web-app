@@ -1,0 +1,1 @@
+export const buildUrl = (url: string, parameter: string) => url.replace(/:\w+[?]?/, parameter);
