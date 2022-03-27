@@ -10,6 +10,6 @@ export const StyledStatus = styled.span`
   }
 
   &.delivered {
-    color: #ddd;
+    color: #aaa;
   } 
 `;
