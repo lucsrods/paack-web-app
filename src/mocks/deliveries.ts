@@ -10,7 +10,7 @@ export default [
       'longitude': '38.0264'
     },
     'delivery': {
-      'status': 'delivered',
+      'status': 'idle',
       'latitude': '41.4105',
       'longitude': '2.1741'
     },

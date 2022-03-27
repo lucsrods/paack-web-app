@@ -1,21 +1,31 @@
+import Loading from '@Components/Loading';
+import Status from '@Components/Status';
 import { DeliveryContext } from '@Contexts/DeliveryContext';
+import { IDelivery } from '@Interfaces/delivery';
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import {
   Item,
-  List
+  List,
 } from './styles';
 
 const Homepage = () => {
-  const { data, loading } = useContext(DeliveryContext);
+  const { deliveries, loading } = useContext(DeliveryContext);
 
   if (loading) {
-    return <h2>Loading</h2>;
+    return <Loading />;
   }
 
   return (
-    <List>{data.map((delivery: any) => (<Item key={delivery.id}><Link to={`/delivery/${delivery.id}`}>{delivery.client}</Link></Item>))}</List>
+    <List>
+      {deliveries?.map((delivery: IDelivery) => (
+        <Item key={delivery.id} active={delivery.active}>
+          <Link to={`/delivery/${delivery.id}`}>{delivery.client}</Link>
+          <Status status={delivery.delivery.status} isActive={delivery.active} />
+        </Item>
+      ))}
+    </List>
   );
 };
 

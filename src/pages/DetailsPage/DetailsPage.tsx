@@ -1,30 +1,66 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
-import useDeliveries from '@Pages/Homepage/hooks/useDeliveries';
+import Button from '@Components/Button';
+import Status from '@Components/Status';
+import Loading from '@Components/Loading';
 import { DeliveryContext } from '@Contexts/DeliveryContext';
+import { DeliveryStatus, IDelivery } from '@Interfaces/delivery';
+import { updateActiveDelivery, updateDeliveryStatus } from '@Services/deliveries';
+
+import { ActionsWrapper, DetailsPageWrapper } from './styles';
 
 const DetailsPage = () => {
-  const { activeDelivery } = useContext(DeliveryContext);
+  const { activeDelivery, deliveries, dispatch } = useContext(DeliveryContext);
   const { id } = useParams();
-  const { data, loading } = useDeliveries(id);
+  const [loading, setLoading] = useState(false);
+  const [currentDelivery, setDelivery] = useState<IDelivery | undefined>(undefined);
 
-  if (loading) {
-    return <h2>Loading Delivery</h2>;
+  useEffect(() => {
+    setLoading(true);
+    setDelivery(deliveries?.find(({ id: deliveryId }) => deliveryId === id));
+    setLoading(false);
+  }, [deliveries, id]);
+
+  if (loading || !currentDelivery) {
+    return <Loading />;
   }
 
-  const isActiveDelivery = activeDelivery.id === id;
+  const isActiveDelivery = activeDelivery?.id === id;
 
   const {
     client,
-    customer
-  } = data;
+    customer,
+    delivery
+  } = currentDelivery;
+
+  const handleDeliveryStatus = async (deliveryStatus: DeliveryStatus) => {
+    setLoading(true);
+    const { status } = await updateDeliveryStatus(deliveryStatus, currentDelivery);
+
+    if (status === 200) {
+      dispatch({ type: 'updateStatus', payload: { id: currentDelivery.id, status: deliveryStatus } });
+      setLoading(false);
+    }
+  };
+
+  const handleActiveDelivery = async () => {
+    setLoading(true);
+    const { status } = await updateActiveDelivery(currentDelivery); 
+
+    if (status === 200) {
+      dispatch({ type: 'active', payload: { id: currentDelivery.id } });
+      setLoading(false);
+    }
+  };
 
   return (
-    <div>
+    <DetailsPageWrapper>
       <Link to="/">Deliveries list</Link>
 
       <h1>Delivery Details</h1>
+      <span><b>STATUS: </b><Status isActive={isActiveDelivery} status={delivery.status} /></span>
+
       <h2>Client: </h2>
       <p>{client}</p>
 
@@ -38,21 +74,42 @@ const DetailsPage = () => {
         </>
       )}
 
-      {isActiveDelivery && (
-        <div>
-          <button type="button">Delivered</button>
-          <button type="button">Undelivered</button>
-        </div> 
-      )}
+      <ActionsWrapper>
+        {isActiveDelivery && (
+          <>
+            <Button
+              onClick={() => handleDeliveryStatus(DeliveryStatus.delivered)}
+              disabled={loading}
+            >
+            Delivered
+            </Button>
+            <Button
+              onClick={() => handleDeliveryStatus(DeliveryStatus.undelivered)}
+              disabled={loading}
+            >
+            Undelivered
+            </Button>
+          </> 
+        )}
 
-      {!isActiveDelivery && (
-        <div>
-          <button type="button" disabled={Boolean(activeDelivery)}>Make Active</button>
-          <Link to={`/delivery/${activeDelivery.id}`}>Go to Active Delivery</Link>
-        </div>
-      )}
-
-    </div>
+        {!isActiveDelivery && (
+          <>
+            {delivery.status !== DeliveryStatus.delivered && (
+              <Button
+                disabled={Boolean(activeDelivery)}
+                onClick={handleActiveDelivery}>
+                Make Active
+              </Button>
+            )}
+            {activeDelivery?.id && (
+              <Link to={`/delivery/${activeDelivery?.id}`}>
+                Go to Active Delivery
+              </Link>)
+            }
+          </>
+        )}
+      </ActionsWrapper>
+    </DetailsPageWrapper>
   );
 };
 

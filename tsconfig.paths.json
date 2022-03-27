@@ -5,8 +5,10 @@
       "@Components/*": ["components/*"],
       "@Constants/*": ["constants/*"],
       "@Contexts/*": ["contexts/*"],
+      "@Hooks/*": ["hooks/*"],
       "@Interfaces/*": ["interfaces/*"],
       "@Pages/*": ["pages/*"],
+      "@Services/*": ["services/*"],
       "@Utils/*": ["utils/*"]
     }
   }

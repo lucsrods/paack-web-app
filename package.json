@@ -11,6 +11,7 @@
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",
     "@types/styled-components": "^5.1.24",
+    "axios": "^0.26.1",
     "react": "^17.0.2",
     "react-app-rewired": "^2.2.1",
     "react-dom": "^17.0.2",
@@ -39,8 +40,10 @@
       "^@Components(.*)$": "<rootDir>/src/components$1",
       "^@Contexts(.*)$": "<rootDir>/src/contexts$1",
       "^@Constants(.*)$": "<rootDir>/src/constants$1",
+      "^@Hooks(.*)$": "<rootDir>/src/hooks$1",
       "^@Interfaces(.*)$": "<rootDir>/src/interfaces$1",
       "^@Pages(.*)$": "<rootDir>/src/pages$1",
+      "^@Services(.*)$": "<rootDir>/src/services$1",
       "^@Utils(.*)$": "<rootDir>/src/utils$1"
     }
   },

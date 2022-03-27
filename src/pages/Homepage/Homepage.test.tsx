@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 import Homepage from './Homepage';
 import server from '../../mocks/server';
+import DeliveryContextProvider from '@Contexts/DeliveryContext';
 
 beforeAll(() => {
   server.listen();
@@ -23,7 +24,13 @@ describe('Homepage', () => {
   });
 
   it('should list all deliveries', async () => {
-    render(<BrowserRouter><Homepage /></BrowserRouter>);
+    render(
+      <BrowserRouter>
+        <DeliveryContextProvider>
+          <Homepage />
+        </DeliveryContextProvider>
+      </BrowserRouter>
+    );
 
     await waitFor(() => {
       expect(screen.getByText(/Kub - Heidenreich/i)).toBeInTheDocument();
